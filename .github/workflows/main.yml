@@ -1,5 +1,5 @@
 name: Push to AWS ECR
-'on':
+on:
   push:
     branches:
       - TechdemoApp-GitAction
