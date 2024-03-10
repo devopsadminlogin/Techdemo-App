@@ -15,4 +15,5 @@ jobs:
       - name: Run Test Command
         run: |
           echo "Running tests..."
+          git branch
           # Add your test commands here
