@@ -4,7 +4,7 @@ name: Push to AWS ECR
     branches:
       - '${{ env.BRANCH_NAME }}'
 env:
-  BRANCH_NAME: TechdemoApp-GitAction
+  BRANCH_NAME: main #TechdemoApp-GitAction
 
 jobs:
   test-job:
