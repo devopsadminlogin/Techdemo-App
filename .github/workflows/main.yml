@@ -1,30 +1,19 @@
-name: Push to AWS ECR
+name: Testing Workflow
 
 on:
   push:
     branches:
-      - ${{ env.BRANCH_NAME }}
-
-env:
-  BRANCH_NAME: TechdemoApp-GitAction
+      - main
 
 jobs:
-  build:
+  test-job:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Login to Amazon ECR
-      run: aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 745097912628.dkr.ecr.ap-south-1.amazonaws.com
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
-
-    - name: Build and push Docker image
-      run: |
-        docker build -t techdome-runer:v1 .
-        docker tag techdome-runer:v1 745097912628.dkr.ecr.ap-south-1.amazonaws.com/techdome-runer:v1
-        docker push 745097912628.dkr.ecr.ap-south-1.amazonaws.com/techdome-runer:v1
-
+      - name: Run Test Command
+        run: |
+          echo "Running tests..."
+          # Add your test commands here
