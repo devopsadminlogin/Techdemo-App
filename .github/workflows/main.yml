@@ -8,37 +8,68 @@ on:
 jobs:
   build-and-push-frontend:
     runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Login to AWS ECR - Frontend
+  #       run: |
+  #         echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | docker login --username AWS --password-stdin "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}"
+
+  #     - name: Build and Push Frontend Image
+  #       working-directory: Techdome-frontend
+  #       run: |
+  #         docker build -t "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" .
+  #         docker tag "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
+  #         docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1"
+  #         docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
+
+  # build-and-push-backend:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Login to AWS ECR - Backend
+  #       run: |
+  #         echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | docker login --username AWS --password-stdin "${{ secrets.AWS_REGISTRY_URL_BACKEND }}"
+
+  #     - name: Build and Push Backend Image
+  #       working-directory: Techdome-backend
+  #       run: |
+  #         docker build -t "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1" .
+  #         docker tag "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1" "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:${{ github.sha }}-backend"
+  #         docker push "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1"
+  #         docker push "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:${{ github.sha }}-backend
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: Login to AWS ECR - Frontend
-        run: |
-          echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | docker login --username AWS --password-stdin "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}"
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1
 
-      - name: Build and Push Frontend Image
-        working-directory: Techdome-frontend
-        run: |
-          docker build -t "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" .
-          docker tag "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
-          docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1"
-          docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-  build-and-push-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Build, tag, and push the image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: techdome-application
+        IMAGE_TAG: latest
+      run: |
+        # Build a docker container and push it to ECR 
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG .
+        echo "Pushing Frontend image to ECR..."
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG"
 
-      - name: Login to AWS ECR - Backend
-        run: |
-          echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | docker login --username AWS --password-stdin "${{ secrets.AWS_REGISTRY_URL_BACKEND }}"
-
-      - name: Build and Push Backend Image
-        working-directory: Techdome-backend
-        run: |
-          docker build -t "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1" .
-          docker tag "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1" "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:${{ github.sha }}-backend"
-          docker push "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1"
-          docker push "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:${{ github.sha }}-backend"
-
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG .
+        echo "Pushing Backend image to ECR..."
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG"
