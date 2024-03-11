@@ -1,31 +1,29 @@
 name: Push to AWS ECR sub-branch:TechdemoApp-GitAction
+
 on:
   push:
     branches:
       - TechdemoApp-GitAction
+
 jobs:
   build-and-push-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+
       - name: Login to AWS ECR - Frontend
-        run: >
-          echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | docker login --username AWS
-          --password-stdin "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}"
+        run: |
+          echo "${{ secrets.AWS_ACCESS_KEY_ID }}" | docker login --username AWS --password-stdin "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}"
+
       - name: Build and Push Frontend Image
         working-directory: Techdome-frontend
-        run: >
+        run: |
           docker build -t "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" .
-
-          docker tag "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" "${{
-          secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
-
+          docker tag "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1" "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
           docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:rd1"
+          docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha }}-frontend"
 
-          docker push "${{ secrets.AWS_REGISTRY_URL_FRONTEND }}:${{ github.sha
-          }}-frontend"
-  build-and-push-backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
