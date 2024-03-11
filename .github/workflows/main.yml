@@ -1,4 +1,4 @@
-name: Push to AWS ECR- sub-branch:"TechdemoApp-GitAction"
+name: Push to AWS ECR
 on:
   push:
     branches:
