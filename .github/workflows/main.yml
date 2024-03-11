@@ -64,9 +64,11 @@ jobs:
         IMAGE_TAG: v1
       run: |
         # Build a docker container and push it to ECR 
+        echo "Step:1 create build with Tag..."
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG -f Techdome-frontend/Dockerfile .
-        echo "Pushing Frontend image to ECR..."
+        echo "Step:2 Add tag forECR..."
         docker tag techdome-application-backend:latest public.ecr.aws/f5n5l7s0/techdome-application-backend:latest
+        echo "step:3 Pushing Frontend image to ECR..."
         docker push public.ecr.aws/f5n5l7s0/$ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG"
 
