@@ -69,8 +69,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY-frontend:$IMAGE_TAG"
 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG -f 
-Techdome-backend/Dockerfile .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG -f Techdome-backend/Dockerfile .
         echo "Pushing Backend image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY-backend:$IMAGE_TAG"
