@@ -33,6 +33,7 @@ jobs:
         # Build a docker container and push it to ECR 
         echo "Step:1 create build with Tag..."
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Techdome-frontend/Dockerfile .
-        echo -x "step:2 Pushing Frontend image to ECR..."
+        Docker images
+        echo "step:2 Pushing Frontend image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
