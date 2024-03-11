@@ -41,3 +41,4 @@ jobs:
           docker tag "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1" "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:${{ github.sha }}-backend"
           docker push "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:rd1"
           docker push "${{ secrets.AWS_REGISTRY_URL_BACKEND }}:${{ github.sha }}-backend"
+
