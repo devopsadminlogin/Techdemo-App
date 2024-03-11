@@ -30,10 +30,15 @@ jobs:
         ECR_REPOSITORY: techdome-application-frontend  # Corrected repository name
         IMAGE_TAG: v1
       run: |
-        # Build a docker container and push it to ECR 
-        echo "Step:1 create build with Tag..."
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Techdome-frontend/Dockerfile .
-        Docker images
-        echo "step:2 Pushing Frontend image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          # Build a docker container and push it to ECR 
+          echo "Step:1 create build with Tag..."
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Techdome-frontend/Dockerfile .
+  
+          # Print information about the built image
+          echo "Docker images after build:"
+          docker images $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          echo "step:2 Pushing Frontend image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
+  
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
