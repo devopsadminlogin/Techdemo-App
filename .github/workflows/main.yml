@@ -32,6 +32,8 @@ jobs:
         IMAGE_TAG: v1
       
       run: |
+          aws --version
+          docker --version
           set -x  # Enable debugging
           # Build a docker container and push it to ECR 
           echo "Step:1 create build with Tag..."
@@ -42,19 +44,7 @@ jobs:
           docker images $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
           echo "step:2 Pushing Frontend image to ECR..."
-          # docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
   
-          # echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-
-
-
-    - name: Debug Output
-      run: |
-          aws --version
-          docker --version
-          set -x  # Enable debugging
-          echo "step:2 Pushing Frontend image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          #docker push ***.dkr.ecr.ap-south-1.amazonaws.com/techdome-application-frontend:v1
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
