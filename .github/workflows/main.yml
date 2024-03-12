@@ -30,7 +30,9 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: techdome-application-frontend  # Corrected repository name
         IMAGE_TAG: v1
+      
       run: |
+          set -x  # Enable debugging
           # Build a docker container and push it to ECR 
           echo "Step:1 create build with Tag..."
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Techdome-frontend/Dockerfile .
@@ -39,10 +41,7 @@ jobs:
           echo "Docker images after build:"
           docker images $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-          set -x  # Enable debugging
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-          #echo "step:2 Pushing Frontend image to ECR..."
-          #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
+          echo "step:2 Pushing Frontend image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
   
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
