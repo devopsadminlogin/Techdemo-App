@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-push-frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 20  # Increase the timeout as needed
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -38,7 +39,10 @@ jobs:
           echo "Docker images after build:"
           docker images $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-          echo "step:2 Pushing Frontend image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
+          set -x  # Enable debugging
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          #echo "step:2 Pushing Frontend image to ECR..."
+          #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  # Corrected push command
   
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
