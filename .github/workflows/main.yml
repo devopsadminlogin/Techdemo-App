@@ -57,4 +57,4 @@ jobs:
           echo "step:2 Pushing Frontend image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           #docker push ***.dkr.ecr.ap-south-1.amazonaws.com/techdome-application-frontend:v1
-          echo "::set-output name=image::***.dkr.ecr.ap-south-1.amazonaws.com/techdome-application-frontend:v1"
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
